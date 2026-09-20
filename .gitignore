@@ -1,0 +1,9 @@
+book/
+.agents/
+.claude/
+.codex/
+docs/
+
+AGENTS.md
+CONTEXT.md
+skills-lock.json
