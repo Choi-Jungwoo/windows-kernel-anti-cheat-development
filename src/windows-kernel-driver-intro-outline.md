@@ -1,6 +1,6 @@
 # Windows 内核驱动入门
 
-这份大纲安排进入反作弊驱动实现课程前需要掌握的基础。从 C/C++ 在机器上的表示开始，逐步讲到 Windows 怎样管理内存、处理请求，以及驱动怎样与系统配合。学完对应正文后，读者应能沿着一份驱动设计说明代码在哪执行、数据归谁所有，并找出越权访问或资源释放错误。是否可以进入下一阶段，以第 32 章的分析题为准；目前章节正文与题目材料尚待编写。
+这份大纲安排进入反作弊驱动实现课程前需要掌握的基础。从 C/C++ 在机器上的表示开始，逐步讲到 Windows 怎样管理内存、处理请求，以及驱动怎样与系统配合。学完对应正文后，读者应能沿着一份驱动设计说明代码在哪执行、数据归谁所有，并找出越权访问或资源释放错误。是否可以进入下一阶段，以第 32 章的分析题为准。目前[第 0 章正文](./chapter-00-environment.md)及其题目已编写，第 1 至 32 章正文与题目材料尚待展开。
 
 内容按微软的内核驱动架构文档、设备驱动接口（DDI）参考和 x64 应用二进制接口（ABI）文档组织。涉及处理器机制时，补充查阅体系结构手册。课程包含环境搭建、系统观察、原理讲解、伪代码和局部示例，不交付完整驱动，也不要求编译、加载、运行或测试驱动。
 
@@ -36,6 +36,8 @@
 ## 开始学习前的环境准备
 
 ### 第 0 章 从零搭建练习环境
+
+[阅读本章正文与练习](./chapter-00-environment.md)。下列条目保留课程安排，具体安装版本、操作步骤和排错方法见正文。
 
 这一章完成后，读者应拥有能恢复的 Windows 10 22H2 x64 目标虚拟机、可用的开发工具与调试器，并能连接目标系统查看基本信息。正文按下面的依赖顺序给出逐步操作，每步说明在哪台机器上做、需要什么权限、预期会看到什么，以及失败后怎样检查。
 
@@ -88,7 +90,7 @@
 
 </details>
 
-本章以 [Hyper-V 系统要求](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/host-hardware-requirements)、[VMware 虚拟网络说明](https://knowledge.broadcom.com/external/article?legacyId=1006480)、[WDK 下载与兼容版本](https://learn.microsoft.com/en-us/windows-hardware/drivers/other-wdk-downloads)、[Hyper-V 虚拟机 KDNET 配置](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/setting-up-network-debugging-of-a-virtual-machine-host)、[虚拟串口调试](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/attaching-to-a-virtual-machine--kernel-mode-)、[WinDbg 符号路径](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/symbol-path) 和 [检查点与恢复练习](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/checkpoints) 为编写依据。安装步骤和界面名称需按正文选定的版本补齐。
+本章以 [Hyper-V 系统要求](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/host-hardware-requirements)、[VMware 虚拟网络说明](https://knowledge.broadcom.com/external/article?legacyId=1006480)、[WDK 下载与兼容版本](https://learn.microsoft.com/en-us/windows-hardware/drivers/other-wdk-downloads)、[Hyper-V 虚拟机 KDNET 配置](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/setting-up-network-debugging-of-a-virtual-machine-host)、[虚拟串口调试](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/attaching-to-a-virtual-machine--kernel-mode-)、[WinDbg 符号路径](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/symbol-path) 和 [检查点与恢复练习](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/checkpoints) 为编写依据。正文附有核对日期与所选版本。
 
 ## 第一部分 语言与机器基础
 
