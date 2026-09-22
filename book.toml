@@ -5,3 +5,4 @@ language = "zh-CN"
 
 [output.html]
 site-url = "/windows-kernel-anti-cheat-development/"
+additional-css = ["theme/tables.css"]

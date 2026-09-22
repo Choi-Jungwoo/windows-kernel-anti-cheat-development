@@ -1,0 +1,13 @@
+@media screen {
+    .table-wrapper table {
+        width: max-content;
+    }
+
+    .table-wrapper th,
+    .table-wrapper td {
+        min-width: 6rem;
+        max-width: 32rem;
+        text-align: left;
+        vertical-align: middle;
+    }
+}
