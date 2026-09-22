@@ -1,6 +1,16 @@
 @media screen {
+    :root {
+        --page-padding: 12px;
+        --content-max-width: none;
+    }
+
+    .content {
+        padding-inline: 0;
+    }
+
     .table-wrapper table {
         width: max-content;
+        min-width: 100%;
     }
 
     .table-wrapper th,
@@ -9,5 +19,13 @@
         max-width: 32rem;
         text-align: left;
         vertical-align: middle;
+    }
+
+    .nav-wide-wrapper {
+        display: none;
+    }
+
+    .nav-wrapper {
+        display: block;
     }
 }
