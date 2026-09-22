@@ -83,3 +83,50 @@
 | `F9`、`F5`、`F10` | 在 Visual Studio 设置断点、开始或继续调试、逐过程执行 | 空心断点时核对源码、EXE 和 PDB 是否对应。[0.14](chapter-00-environment.md#usermode) |
 
 能连接并暂停目标，只完成了环境检查的一部分。版本配对、还原能力和用户态断点都需要各自的记录，参见[环境完成检查](chapter-00-environment.md#环境完成检查)。
+
+<a id="chapter-01"></a>
+
+## 第 1 章 重新看 C/C++ 中的数据与内存
+
+### 整数、指针与对象
+
+| 名称或表达式 | 含义与用途 | 关键限制与正文 |
+| --- | --- | --- |
+| bit、byte、`0x` | 位、字节与十六进制前缀；本章一个字节为 8 位 | 读消息字段前先确认位宽，十六进制每位对应 4 个二进制位。[1.1](chapter-01-data-and-memory.md#integers) |
+| `std::uint8_t`、`std::uint16_t`、`std::uint32_t`、`std::uint64_t` | `<cstdint>` 中的无符号固定宽度整数，分别为 8、16、32、64 位 | 本章平台均可用；字段宽度不同时，转换可能丢失高位。[1.1](chapter-01-data-and-memory.md#integers) |
+| `std::int32_t`、`std::int64_t` | 32、64 位有符号整数 | 有符号溢出是未定义行为，不能依赖回绕；负数先检查再转无符号长度。[1.1](chapter-01-data-and-memory.md#integers) |
+| `std::size_t`、`void*`、`long` | 本地大小类型、指针类型与整数类型 | MSVC x64 下前两者占 8 字节，`long` 占 4 字节；不能把它们当作跨平台消息宽度。[1.1](chapter-01-data-and-memory.md#integers) |
+| 补码 / two's complement、截断 / truncation、符号扩展 | 解释本章有符号表示、缩窄与扩宽 | 扩宽结果变量不能修复已经在较窄表达式中发生的溢出。[1.1](chapter-01-data-and-memory.md#integers)、[1.4](chapter-01-data-and-memory.md#lengths) |
+| `static_cast<T>`、`auto`、`constexpr` | 显式转换、从初始化表达式推导类型、声明编译时常量 | 转换不会自动拒绝超范围输入；`u` 后缀用于无符号字面量。[1.1](chapter-01-data-and-memory.md#integers) |
+| `&`、`\|`、`^`、`~`、`<<`、`>>` | 按位与、或、异或、取反、左移和右移，用于掩码与字节解码 | 至少一位置位与全部位置位条件不同；移位次数须小于提升后左操作数的位宽。[1.1](chapter-01-data-and-memory.md#integers) |
+| buffer、容量、有效长度 | 缓冲区、容纳上限与实际允许使用的长度 | 元素数与字节数分别标明，接收容量不能替代实际收到的长度。[1.2](chapter-01-data-and-memory.md#pointers) |
+| `nullptr`、dangling pointer | 空指针常量与悬空指针 | 非空不保证对象仍存活，指针副本不延长生存期。[1.2](chapter-01-data-and-memory.md#pointers) |
+| array-to-pointer decay、尾后指针 | 数组转首元素指针，以及同一数组末尾之后的位置 | 指针不携带数组长度；尾后位置可用于范围比较，不可解引用。[1.2](chapter-01-data-and-memory.md#pointers) |
+| scope、object lifetime、ownership | 作用域、对象生存期与所有权 | 分别回答名字在哪可见、对象何时存在、谁负责释放；排队地址前须保证数据有效期。[1.2](chapter-01-data-and-memory.md#pointers) |
+
+### 布局与安全长度
+
+| 名称或条件 | 含义与用途 | 关键限制与正文 |
+| --- | --- | --- |
+| offset、alignment、padding | 偏移、对齐与填充 | MSVC x64 默认条件下，本章 `LocalRecord` 偏移为 0、4、8、12，总大小为 16。[1.3](chapter-01-data-and-memory.md#layout) |
+| `sizeof`、`alignof`、`offsetof` | 求大小、对齐要求与成员偏移 | 结构体大小包含填充；指针的 `sizeof` 不等于缓冲区长度，`offsetof` 不用于位域。[1.3](chapter-01-data-and-memory.md#layout) |
+| little-endian、big-endian | 小端序与大端序，约定多字节数值的字节顺序 | 小端把最低有效字节放在最低偏移；协议应明确约定，不能靠强转推定。[1.3](chapter-01-data-and-memory.md#layout) |
+| `union`、bit-field、`#pragma pack` | 联合体、位域与打包对齐控制 | 联合体跟踪当前有效成员；位域布局依赖实现，打包不能代替长度检查。[1.3](chapter-01-data-and-memory.md#layout) |
+| `version`、`flags`、`count`、`payload_bytes` | 本章消息头字段，分别为版本、标志、条目数和条目区字节数 | 消息头 12 字节，每条 8 字节，最多 1024 条；版本为 1，标志只定义位 0，禁止尾随字节。[1.3](chapter-01-data-and-memory.md#layout) |
+| `length >= H` | 在读取固定头之前确认真实可读长度足够 | 先检查，才能做无符号减法 `length - H`。[1.4](chapter-01-data-and-memory.md#lengths) |
+| `count <= (length - H) / E` | 用剩余空间约束条目数，之后再做乘法 | `E` 必须非零；还要核对协议声明长度与业务上限。[1.4](chapter-01-data-and-memory.md#lengths) |
+| `b <= M - a`、`a <= M / b` | 以目标类型最大值 `M` 预查无符号加法、乘法是否能表示 | 操作数先在目标类型范围内，第二式要求 `b != 0`；能表示不等于能分配。[1.4](chapter-01-data-and-memory.md#lengths) |
+| `ReadU16Le`、`ReadU32Le`、`ValidateMessage` | 本章自定义的 2 字节、4 字节小端解码与消息结构校验函数 | 不是 Windows API；要求真实缓冲区在调用期间有效且不变，校验通过不代表内容可信。[1.4](chapter-01-data-and-memory.md#lengths) |
+| `ntintsafe.h` | WDK 安全整数运算与转换函数所在头文件 | 函数报告溢出后调用方要处理失败，本章只介绍用途。[1.4](chapter-01-data-and-memory.md#lengths) |
+| `assert`、`NDEBUG`、`/std:c++17`、`%zu` | 实验断言、禁用断言的宏、语言版本选项、大小类型打印格式 | 实验不定义 `NDEBUG`，正式输入检查保留在校验函数内；仅编译独立用户态程序。[1.4](chapter-01-data-and-memory.md#lengths) |
+
+### 保存与处理记录
+
+| 名称 | 用途与反作弊场景 | 关键限制与正文 |
+| --- | --- | --- |
+| 数组、`O(1)`、`O(n)` | 数组按下标访问为常数级，按值查找通常随项数增长 | 下标小于有效元素数，复杂度不表示具体耗时。[1.5](chapter-01-data-and-memory.md#structures) |
+| intrusive linked list、`LIST_ENTRY`、`Flink`、`Blink` | 侵入式链表、Windows 双向链接结构、后继和前驱链接 | 已知节点可快速摘除；摘除不等于可释放，仍需确认借用者结束访问。[1.5](chapter-01-data-and-memory.md#structures) |
+| FIFO、queue、ring buffer | First In, First Out，先进先出；队列与环形缓冲区，用于有上限的事件排队 | 本章 `head` 取出、`tail` 写入、`used` 区分空满；满时拒绝新项并记录丢弃。[1.5](chapter-01-data-and-memory.md#structures) |
+| lookup table、hash table | 查找表与哈希表，按键定位已保存记录 | 哈希查找平均可为常数级，冲突会恶化；容量、删除与对象生存期仍需管理。[1.5](chapter-01-data-and-memory.md#structures) |
+
+消息长度合法，只证明当前检查覆盖的结构关系。地址生存期、条目含义、权限与并发条件还需要分别成立；本章实验的范围见[用户态示例](chapter-01-data-and-memory.md#lengths)，复习题见[思考题](chapter-01-data-and-memory.md#thinking)与[练习题](chapter-01-data-and-memory.md#exercises)。

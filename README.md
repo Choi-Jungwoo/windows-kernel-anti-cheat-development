@@ -4,9 +4,9 @@
 
 项目的长期目标，是让读者掌握构建高水平 Windows 内核反作弊驱动所需的知识与工程方法。教程提供原理说明、伪代码和局部 C/C++ 示例，用来解释调用关系、判断条件与资源管理。本项目不提供完整驱动，也不编译、运行或测试驱动。
 
-目前已编写 [第 0 章 从零搭建练习环境](src/chapter-00-environment.md)，包含 Hyper-V 与 VMware 两条路线、工具安装、内核调试、恢复练习和独立用户态小实验。第 1 至 32 章仍处于[详细大纲](src/windows-kernel-driver-intro-outline.md)阶段，正文尚待展开。实际内容可以查看 [教程目录](src/SUMMARY.md)。
+目前已编写 [第 0 章 从零搭建练习环境](src/chapter-00-environment.md)和[第 1 章 重新看 C/C++ 中的数据与内存](src/chapter-01-data-and-memory.md)。第 0 章包含 Hyper-V 与 VMware 两条路线、工具安装、内核调试和恢复练习；第 1 章讲解整数、指针、结构体布局、长度检查与常见数据结构，并提供独立用户态实验和逐题解析。第 2 至 32 章仍处于[详细大纲](src/windows-kernel-driver-intro-outline.md)阶段，正文尚待展开。实际内容可以查看 [教程目录](src/SUMMARY.md)。
 
-[学习速查表](src/cheat-sheet.md) 已收录第 0 章的环境分工、工具与版本规则、调试命令和恢复要点，后续随章节正文补充。
+[学习速查表](src/cheat-sheet.md) 已收录第 0 章的环境与调试要点，以及第 1 章的数据表示、内存边界、长度检查和容器有效期，后续随章节正文补充。
 
 ## 开始前需要会什么
 

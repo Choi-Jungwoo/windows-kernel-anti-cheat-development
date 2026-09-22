@@ -4,6 +4,8 @@
 
 [第 0 章 从零搭建练习环境](./chapter-00-environment.md)
 
+[第 1 章 重新看 C/C++ 中的数据与内存](./chapter-01-data-and-memory.md)
+
 ---
 
 [学习速查表](./cheat-sheet.md)
